@@ -8,49 +8,50 @@ import { fetchBreeds, fetchCatByBreed } from './cat-api.js';
 // const BASE_URL = 'https://api.thecatapi.com/v1/breeds';
 // axios.defaults.headers.common['x-api-key'] =
 //   'live_gqCDtXROVBYQEPNW3vLvgVi7ZXwNuvMNOnquLQrpKSOZsOhw5jDghmYIy1yEpyZw';
-
 const getSelect = document.querySelector('.breed-select');
 const loaderAnswer = document.querySelector('.loader');
 const errorAnswer = document.querySelector('.error');
+const getCat = document.querySelector('.cat-info');
 
-// new SlimSelect({ select: '#loaderAnswer' });
+new SlimSelect({ select: '#getSelect' });
 
 fetchBreeds()
-  .then(data => {
-    // console.log(data);
-    getSelect.insertAdjacentHTML('beforeend', createMarkUp(data));
-    loaderAnswer.classList.replace('loader', 'loader-hidden');
+  .then(breeds => {
+    console.log(breeds.data);
+    getSelect.insertAdjacentHTML('beforeend', createMarkUp(breeds.data));
+    getSelect.classList.replace('error', 'error-hidden');
   })
   .catch(error => {
-    // console.log('Error!!!', error);
-    errorAnswer.classList.replace('error', 'error-hidden');
+    console.log(error);
+    Notiflix.Notify.failure(errorAnswer.textContent);
+    loaderAnswer.classList.replace('.loader', '.loader-hidden');
   });
 
 function createMarkUp(arr) {
   return (
-    arr.map(({ id, name }) => `<option value=${id}>${name}</jption>`), join('')
+    arr.map(({ id, name }) => `<option value=${id}>${name}</option>`), join('')
   );
 }
 
-const getCat = document.querySelector('.cat-info');
-fetchCatByBreed()
-  .then(data => {
-    // console.log(data);
-    getCat.insertAdjacentHTML('beforeend', createMarkUpTo(data));
-    loaderAnswer.classList.replace('loader', 'loader-hidden');
+fetchCatByBreed('abys')
+  .then(cat => {
+    console.log(cat.data);
+    getCat.insertAdjacentHTML('beforeend', createMarkUpTo(cat.data));
+    getCat.classList.replace('error', 'error-hidden');
   })
   .catch(error => {
-    // console.log('Error!!!', error);
-    errorAnswer.classList.replace('error', 'error-hidden');
+    console.log(error);
+    Notiflix.Notify.failure(errorAnswer.textContent);
+    loaderAnswer.classList.replace('.loader', '.loader-hidden');
   });
 
 function createMarkUpTo(arr) {
+  console.log(arr);
   return (
     arr.map(
       ({ url, id, width, height }) =>
-        `<img src=https://cdn2.thecatapi.com/images/${id} width=${width} height=${height}>`
+        `<img src=${url} id=${id} width=${width} height=${height}>`
     ),
     join('')
   );
 }
-console.log(fetchCatByBreed('abys'));

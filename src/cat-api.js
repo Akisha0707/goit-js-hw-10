@@ -12,13 +12,15 @@ axios.defaults.headers.common['x-api-key'] =
 
 function fetchBreeds() {
   return axios.get('https://api.thecatapi.com/v1/breeds');
+  // .then(breeds => console.log(breeds.data));
 }
 
 //отримуємо проміс всіх картинок котів
-function fetchCatByBreed(breedId) {
+function fetchCatByBreed(breed_ids) {
   return axios.get(
-    `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`
+    `https://api.thecatapi.com/v1/images/search?breed_ids=${breed_ids}`
   );
+  // .then(cat => console.log(cat.data));
 }
 
 //експортуємо дані на сторінку index.js
