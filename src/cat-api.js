@@ -8,19 +8,17 @@ const BASE_URL = 'https://api.thecatapi.com/v1/breeds';
 axios.defaults.headers.common['x-api-key'] =
   'live_gqCDtXROVBYQEPNW3vLvgVi7ZXwNuvMNOnquLQrpKSOZsOhw5jDghmYIy1yEpyZw';
 
-//отримуємо проміс всієї колекції порід собак
-
+//отримуємо проміс всієї колекції порід котів
 function fetchBreeds() {
   return axios.get('https://api.thecatapi.com/v1/breeds');
-  // .then(breeds => console.log(breeds.data));
 }
 
-//отримуємо проміс всіх картинок котів
+//отримуємо проміс картинок та інформації про котів
 function fetchCatByBreed(breed_ids) {
+  console.log(breed_ids);
   return axios.get(
     `https://api.thecatapi.com/v1/images/search?breed_ids=${breed_ids}`
   );
-  // .then(cat => console.log(cat.data));
 }
 
 //експортуємо дані на сторінку index.js

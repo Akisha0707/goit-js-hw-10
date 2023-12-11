@@ -1,57 +1,71 @@
-// import axios from 'axios';
+//підключаємо імпортовані файли
 import SlimSelect from 'slim-select';
+import 'slim-select/dist/slimselect.css';
 import Notiflix from 'notiflix';
 import { fetchBreeds, fetchCatByBreed } from './cat-api.js';
 
-// const API_KEY =
-//   'live_gqCDtXROVBYQEPNW3vLvgVi7ZXwNuvMNOnquLQrpKSOZsOhw5jDghmYIy1yEpyZw';
-// const BASE_URL = 'https://api.thecatapi.com/v1/breeds';
-// axios.defaults.headers.common['x-api-key'] =
-//   'live_gqCDtXROVBYQEPNW3vLvgVi7ZXwNuvMNOnquLQrpKSOZsOhw5jDghmYIy1yEpyZw';
+//звертаємось до дом-елементів
 const getSelect = document.querySelector('.breed-select');
 const loaderAnswer = document.querySelector('.loader');
 const errorAnswer = document.querySelector('.error');
 const getCat = document.querySelector('.cat-info');
 
-new SlimSelect({ select: '#getSelect' });
+//стилізуємо елементи
+getSelect.style.fontSize = '20px';
+// getSelect.style.borderRadius = '';
+errorAnswer.style.color = 'red';
+getCat.style.display = 'flex';
+getCat.style.gap = '20px';
 
+new SlimSelect({ select: '#loader' });
+
+//обробляємо отриманий проміс колекції котів
 fetchBreeds()
   .then(breeds => {
-    console.log(breeds.data);
     getSelect.insertAdjacentHTML('beforeend', createMarkUp(breeds.data));
     getSelect.classList.replace('error', 'error-hidden');
+    loaderAnswer.classList.replace('.loader', '.loader-hidden');
   })
   .catch(error => {
     console.log(error);
     Notiflix.Notify.failure(errorAnswer.textContent);
     loaderAnswer.classList.replace('.loader', '.loader-hidden');
+    getSelect.classList.replace('error', 'error-hidden');
   });
 
-function createMarkUp(arr) {
-  return (
-    arr.map(({ id, name }) => `<option value=${id}>${name}</option>`), join('')
-  );
+//відмальовуємо елементи на сторінці у вигляді випадаючого списку
+function createMarkUp(event) {
+  return event
+    .map(({ id, name }) => `<option value=${id}>${name}</option>`)
+    .join('');
 }
 
-fetchCatByBreed('abys')
+//обробляємо отриманий проміс картинок
+fetchCatByBreed('acur')
   .then(cat => {
-    console.log(cat.data);
+    // console.log(cat);
     getCat.insertAdjacentHTML('beforeend', createMarkUpTo(cat.data));
-    getCat.classList.replace('error', 'error-hidden');
+    // loaderAnswer = 'false';
+    loaderAnswer.classList.replace('.loader', '.loader-hidden');
   })
   .catch(error => {
     console.log(error);
     Notiflix.Notify.failure(errorAnswer.textContent);
-    loaderAnswer.classList.replace('.loader', '.loader-hidden');
+    getCat.classList.replace('error', 'error-hidden');
   });
 
-function createMarkUpTo(arr) {
-  console.log(arr);
-  return (
-    arr.map(
-      ({ url, id, width, height }) =>
-        `<img src=${url} id=${id} width=${width} height=${height}>`
-    ),
-    join('')
-  );
+//відмальовуємо картинки і iформацію про котів на сторінці
+function createMarkUpTo(event) {
+  console.log(event);
+  return event
+    .map(
+      ({ url, id }) =>
+        `<img src=${url} id=${id}, width=500px, height=500px>
+        <div class=header-cat>
+        <h1>${event[0].breeds[0].name}</h1>
+      <p>${event[0].breeds[0].description}</p>
+      <h2>Temperament:</h2>${event[0].breeds[0].temperament}
+      </div>`
+    )
+    .join('');
 }
