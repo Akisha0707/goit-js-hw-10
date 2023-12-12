@@ -5,53 +5,54 @@ import Notiflix from 'notiflix';
 import { fetchBreeds, fetchCatByBreed } from './cat-api.js';
 
 //звертаємось до дом-елементів
-const getSelect = document.querySelector('.breed-select');
+const getSelect = document.querySelector('.breed-select'); //випадаючий список
+const getCat = document.querySelector('.cat-info'); //картинки котів і інформція
 const loaderAnswer = document.querySelector('.loader');
 const errorAnswer = document.querySelector('.error');
-const getCat = document.querySelector('.cat-info');
 
 //стилізуємо елементи
-getSelect.style.fontSize = '20px';
-// getSelect.style.borderRadius = '';
+
 errorAnswer.style.color = 'red';
 getCat.style.display = 'flex';
 getCat.style.gap = '20px';
 
-new SlimSelect({ select: '#loader' });
+getSelect.style.visibility = 'visibility';
+getCat.style.visibility = 'visibility';
+errorAnswer.style.visibility = 'hidden';
+loaderAnswer.style.visibility = 'hidden';
+
+// new SlimSelect({ select: '#error' });
 
 //обробляємо отриманий проміс колекції котів
 fetchBreeds()
   .then(breeds => {
     getSelect.insertAdjacentHTML('beforeend', createMarkUp(breeds.data));
-    getSelect.classList.replace('error', 'error-hidden');
-    loaderAnswer.classList.replace('.loader', '.loader-hidden');
+    // getSelect.style.visibility = 'hidden';
+    loaderAnswer.style.visibility = 'visibility';
   })
   .catch(error => {
-    console.log(error);
+    // console.log(error);
     Notiflix.Notify.failure(errorAnswer.textContent);
-    loaderAnswer.classList.replace('.loader', '.loader-hidden');
-    getSelect.classList.replace('error', 'error-hidden');
   });
 
 //відмальовуємо елементи на сторінці у вигляді випадаючого списку
 function createMarkUp(event) {
   return event
-    .map(({ id, name }) => `<option value=${id}>${name}</option>`)
+    .map(({ id, name }) => `<option class= a value=${id}>${name}</option>`)
     .join('');
 }
 
 //обробляємо отриманий проміс картинок
-fetchCatByBreed('acur')
+fetchCatByBreed('abys')
   .then(cat => {
-    // console.log(cat);
     getCat.insertAdjacentHTML('beforeend', createMarkUpTo(cat.data));
-    // loaderAnswer = 'false';
-    loaderAnswer.classList.replace('.loader', '.loader-hidden');
+    getCat.style.visibility = 'hidden';
+    loaderAnswer.style.visibility = 'visibility';
   })
   .catch(error => {
     console.log(error);
+    Notiflix.Notify.failure((errorAnswer.style.visibility = 'visibility'));
     Notiflix.Notify.failure(errorAnswer.textContent);
-    getCat.classList.replace('error', 'error-hidden');
   });
 
 //відмальовуємо картинки і iформацію про котів на сторінці
