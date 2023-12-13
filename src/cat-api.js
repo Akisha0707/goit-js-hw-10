@@ -15,7 +15,7 @@ function fetchBreeds() {
 
 //отримуємо проміс картинок та інформацію про котів
 function fetchCatByBreed(breed_ids) {
-  console.log(breed_ids);
+  // console.log(breed_ids);
   return axios.get(
     `https://api.thecatapi.com/v1/images/search?breed_ids=${breed_ids}`
   );

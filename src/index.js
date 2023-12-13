@@ -11,49 +11,49 @@ const loaderAnswer = document.querySelector('.loader');
 const errorAnswer = document.querySelector('.error');
 
 //стилізуємо елементи
-
 errorAnswer.style.color = 'red';
 getCat.style.display = 'flex';
 getCat.style.gap = '20px';
 
-getSelect.style.visibility = 'visibility';
-getCat.style.visibility = 'visibility';
 errorAnswer.style.visibility = 'hidden';
 loaderAnswer.style.visibility = 'hidden';
+loaderAnswer.style.visibility = 'visibility';
 
-// new SlimSelect({ select: '#error' });
+// new SlimSelect({ select: '#getSelect' });
 
 //обробляємо отриманий проміс колекції котів
 fetchBreeds()
   .then(breeds => {
     getSelect.insertAdjacentHTML('beforeend', createMarkUp(breeds.data));
-    // getSelect.style.visibility = 'hidden';
     loaderAnswer.style.visibility = 'visibility';
   })
   .catch(error => {
-    // console.log(error);
+    console.log(error);
     Notiflix.Notify.failure(errorAnswer.textContent);
   });
 
 //відмальовуємо елементи на сторінці у вигляді випадаючого списку
 function createMarkUp(event) {
   return event
-    .map(({ id, name }) => `<option class= a value=${id}>${name}</option>`)
+    .map(({ id, name }) => `<option value=${id}>${name}</option>`)
     .join('');
 }
 
-//обробляємо отриманий проміс картинок
-fetchCatByBreed('abys')
-  .then(cat => {
-    getCat.insertAdjacentHTML('beforeend', createMarkUpTo(cat.data));
-    getCat.style.visibility = 'hidden';
-    loaderAnswer.style.visibility = 'visibility';
-  })
-  .catch(error => {
-    console.log(error);
-    Notiflix.Notify.failure((errorAnswer.style.visibility = 'visibility'));
-    Notiflix.Notify.failure(errorAnswer.textContent);
-  });
+//додаємо прослуховувач на випадаючтй списол
+getSelect.addEventListener('change', onGetElement);
+
+function onGetElement(event) {
+  fetchCatByBreed(this.value)
+    .then(cat => {
+      getCat.insertAdjacentHTML('beforeend', createMarkUpTo(cat.data));
+      loaderAnswer.style.visibility = 'visibility';
+    })
+    .catch(error => {
+      console.log(error);
+      Notiflix.Notify.failure(errorAnswer.textContent);
+    });
+  getCat.innerHTML = '';
+}
 
 //відмальовуємо картинки і iформацію про котів на сторінці
 function createMarkUpTo(event) {
@@ -61,7 +61,7 @@ function createMarkUpTo(event) {
   return event
     .map(
       ({ url, id }) =>
-        `<img src=${url} id=${id}, width=500px, height=500px>
+        `<img src=${url} id=${id}, width=450px, height=450px>
         <div class=header-cat>
         <h1>${event[0].breeds[0].name}</h1>
       <p>${event[0].breeds[0].description}</p>
